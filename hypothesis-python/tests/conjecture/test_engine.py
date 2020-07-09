@@ -1465,3 +1465,18 @@ def test_does_not_run_optimisation_when_max_examples_is_small():
         except RunIsComplete:
             pass
         assert runner.optimise_targets.call_count == 0
+
+
+def test_can_be_set_to_ignore_limits():
+    def test(data):
+        data.draw_bits(8)
+
+    with deterministic_PRNG():
+        runner = ConjectureRunner(
+            test, settings=settings(TEST_SETTINGS, max_examples=1), ignore_limits=True
+        )
+
+        for c in range(256):
+            runner.cached_test_function([c])
+
+        assert runner.tree.is_exhausted
