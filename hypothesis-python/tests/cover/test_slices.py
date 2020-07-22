@@ -98,3 +98,24 @@ def test_start_will_equal_0(size):
 @settings(deadline=None)
 def test_start_will_equal_stop(size):
     find_any(st.slices(size), lambda x: x.start == x.stop)
+
+
+@given(st.integers(1, 1000))
+@settings(deadline=1)
+def test_negative_indices(size):
+    find_any(st.slices(size), lambda x: x.start == -size)
+
+
+@given(st.integers(1, 1000))
+@settings(deadline=1)
+def test_step_will_be_none(size):
+    find_any(st.slices(size), lambda x: x.step is None)
+
+
+def test_length_zero_sequences():
+    find_any(
+        st.slices(size=0),
+        lambda x: x.start is None
+        and x.stop is None
+        and (x.step is None or isinstance(x.step, int)),
+    )

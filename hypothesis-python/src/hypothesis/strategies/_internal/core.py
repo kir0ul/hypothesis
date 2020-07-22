@@ -2180,8 +2180,12 @@ def slices(draw: Any, size: int) -> slice:
     Examples from this strategy shrink toward 0 and smaller values
     """
     check_valid_integer(size, "size")
-    if size is None or size < 1:
+    if size is None or size < 0:
         raise InvalidArgument("size=%r must be at least one" % size)
+    if size == 0:
+        # Generate slicing with length-zero sequences
+        # return builds(slice, none(), none(), none() | integers().filter(bool))
+        return slice(None, None, draw(none() | integers().filter(bool)))
 
     min_start = min_stop = 0
     max_start = max_stop = size
